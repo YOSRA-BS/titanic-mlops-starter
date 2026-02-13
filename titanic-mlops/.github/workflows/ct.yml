@@ -1,0 +1,56 @@
+name: Continuous Training
+
+on:
+  schedule:
+    # Runs every day at 2 AM
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  check-and-retrain:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Check if retraining needed
+      id: check
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      run: |
+        python scripts/check_retrain.py > output.txt
+        cat output.txt
+        if grep -q 'RETRAIN_NEEDED' output.txt; then
+          echo "retrain=true" >> $GITHUB_OUTPUT
+        else
+          echo "retrain=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Retrain model
+      if: steps.check.outputs.retrain == 'true'
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      run: |
+        python -m src.models.train --data-path data/processed --retrain true
+    
+    - name: Promote if better
+      if: steps.check.outputs.retrain == 'true'
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      run: |
+        python scripts/promote_model.py --model-name titanic_classifier --compare-with-production
+    
+    - name: Send notification
+      if: steps.check.outputs.retrain == 'true'
+      run: |
+        echo "Model retrained successfully!"

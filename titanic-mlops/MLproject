@@ -1,0 +1,18 @@
+name: titanic_mlops
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      data_path: {type: str, default: "data/processed"}
+      n_estimators: {type: int, default: 100}
+      max_depth: {type: int, default: 10}
+      random_state: {type: int, default: 42}
+    command: "python -m src.models.train --data-path {data_path} --n-estimators {n_estimators} --max-depth {max_depth} --random-state {random_state}"
+  
+  evaluate:
+    parameters:
+      model_uri: {type: str}
+      data_path: {type: str, default: "data/processed"}
+    command: "python -m src.models.evaluate --model-uri {model_uri} --data-path {data_path}"

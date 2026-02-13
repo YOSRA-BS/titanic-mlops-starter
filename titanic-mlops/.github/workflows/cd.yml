@@ -1,0 +1,47 @@
+name: Continuous Delivery
+
+on:
+  workflow_run:
+    workflows: ['Continuous Integration']
+    types:
+      - completed
+    branches: [main]
+
+jobs:
+  train-and-deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Train model
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      run: |
+        python -m src.models.train --data-path data/processed
+    
+    - name: Evaluate and promote
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      run: |
+        python scripts/promote_model.py --model-name titanic_classifier --min-accuracy 0.80
+    
+    - name: Build Docker image
+      run: |
+        docker build -t titanic-model:${{ github.sha }} -f deployment/Dockerfile .
+    
+    - name: Deploy notification
+      if: success()
+      run: |
+        echo "Model deployed successfully!"
