@@ -1,0 +1,8 @@
+conda 
+
+Quand tu installes MLflow, tu installes aussi plein d'autres packages (dépendances) chacun demandant ses propres versions de paquets.Parfois, ces versions sont incompatibles
+
+Conda, c’est comme un “super gestionnaire de paquets”.
+Quand tu crées un “environment” (exemple : conda create -n mon_env python=3.10), tu repars avec un Python “vide”.
+Ensuite tu installes MLflow, Gradio…
+Conda vérifie TOUTES les versions demandées et essaye d’installer des versions compatibles entre elles 

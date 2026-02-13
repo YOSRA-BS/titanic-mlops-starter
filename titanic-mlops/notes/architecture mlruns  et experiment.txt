@@ -1,0 +1,1 @@
+architecture mlruns  et experiment  mlruns:le dossier physique créé par MLflow pour stocker toutes les informations de suivi. À l’intérieur, tu trouveras des sous-dossiers pour chaque  experiment , chaque experiment regroupe plusieurs runs 
