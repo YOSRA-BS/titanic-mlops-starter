@@ -34,7 +34,7 @@ Pipeline MLOps complet avec CI/CD/CT pour la prédiction de survie du Titanic.
 
 ```bash
 # Cloner le repo
-git clone https://github.com/votre-username/titanic-mlops.git
+git clone https://github.com/YOSRA-BS/titanic-mlops.git
 cd titanic-mlops
 
 # Créer l'environnement
