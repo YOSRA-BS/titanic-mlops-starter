@@ -1,0 +1,32 @@
+{
+  "name": "MLOPS Titanic Starter",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.python"
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+        "ms-tools.cmake-tools",
+        "GitLens.gitlens"
+      ]
+    }
+  },
+  "forwardPorts": [5000, 8000, 8501],
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ],
+  "postCreateCommand": "bash .devcontainer/init.sh",
+  "remoteUser": "root"
+}
