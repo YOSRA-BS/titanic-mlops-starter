@@ -7,9 +7,9 @@ setup(
     install_requires=[ #ce qu’il faut pour utiliser la librairie, pas pour la développer/tester
         "mlflow>=2.9.0",
         "scikit-learn>=1.3.0",
-        "pandas>=2.1.0",
+        "pandas>=2.0.0",
         "numpy>=1.24.0",
-        "scipy>=1.11.0",
+        "scipy>=1.9.0",
         "flask>=3.0.0",
     ],
     python_requires=">=3.8",
